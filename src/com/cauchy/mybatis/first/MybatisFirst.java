@@ -2,6 +2,7 @@ package com.cauchy.mybatis.first;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -42,5 +43,25 @@ public class MybatisFirst {
 		System.out.println(user);
 		sqlSession.close();
 		
+	}
+	@Test
+	public void insertUser()throws IOException{
+		// 配置文件
+		String resource = "SqlMapConfig.xml";
+		// 得到配置文件流：
+		InputStream inputStream = Resources.getResourceAsStream(resource);
+		// 创建对话工厂：
+		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+		// 获取Session
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		User user = new User();
+		user.setUsername("Lucy123");
+		user.setBirthday(new Date());
+		user.setSex("M");
+		user.setAddress("London");
+		sqlSession.insert("test.insertUser",user);
+		// 执行提交：
+		sqlSession.commit();
+		sqlSession.close();
 	}
 }
