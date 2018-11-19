@@ -12,4 +12,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="findUserById" parameterType = "int" resultType="com.cauchy.mybatis.po.User">
 		select * from user where id = #{id}
 	</select>
+	<!-- 根据用户名称模糊查询可能查询多个结果，${}表示字符串拼接，将接收的内容不加任何修饰直接拼接到SQL中注入，使用
+		$可能会导致SQL注入，${}中接收的参数美容如果传入的是简单类型{}中只能使用value
+	 -->
+	 <select id = "findUserByName" parameterType = "java.lang.String" resultType = "com.cauchy.mybatis.po.User">
+	 	select * from user where username like '%${value}%'
+	 </select>
 </mapper>
