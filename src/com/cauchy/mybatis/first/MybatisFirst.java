@@ -47,7 +47,7 @@ public class MybatisFirst {
 	@Test
 	public void insertUser()throws IOException{
 		// 配置文件
-		String resource = "SqlMapConfig.xml";
+		String resource = "sqlMapConfig.xml";
 		// 得到配置文件流：
 		InputStream inputStream = Resources.getResourceAsStream(resource);
 		// 创建对话工厂：
@@ -61,6 +61,21 @@ public class MybatisFirst {
 		user.setAddress("London");
 		sqlSession.insert("test.insertUser",user);
 		// 执行提交：
+		sqlSession.commit();
+		sqlSession.close();
+	}
+	@Test
+	public void deleteUser()throws IOException{
+		// 配置文件路径
+		String resource = "sqlMapConfig.xml";
+		// 得到配置文件流
+		InputStream inputStream = Resources.getResourceAsStream(resource);
+		// 创建对话工厂
+		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+		// 获取对话
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		// 删除数据：
+		sqlSession.delete("test.deleteUser",7);
 		sqlSession.commit();
 		sqlSession.close();
 	}
