@@ -79,4 +79,21 @@ public class MybatisFirst {
 		sqlSession.commit();
 		sqlSession.close();
 	}
+	@Test
+	public void updateUser() throws IOException{
+		// 配置文件：
+		String resource = "sqlMapConfig.xml";
+		// 得到配置文件流：
+		InputStream inputStream = Resources.getResourceAsStream(resource);
+		// 创建对话工厂：
+		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+		// 创建session ：
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		User user = new User();
+		user.setUsername("Haha");
+		user.setId(6);
+		sqlSession.update("test.updateUser",user);
+		sqlSession.commit();
+		sqlSession.close();
+	}
 }
