@@ -7,11 +7,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 在映射文件中配置SQL语句 ，通过select执行数据库查询，id：标识映射文件中的SQL称为statement的id-->
 	<!-- parameterType指定输入参数的类型 ，#{}表示占位符，#{id} 表示接受输入的参数如果参数为简单类型，#{}中的参数名称可以任意
 	resultType为输出参数的类型-->
-	<select id = "findUserById" parameterType = "int" resultType = "com.cauchy.mybatis.po.User">
+	<select id = "findUserById" parameterType = "int" resultType = "user">
 		select * from user where id = #{id}
 	</select>
 	<!-- 根据名称模糊查询可能返回多个结果${}表示拼接字符串，可能会导致SQL注入，${}中接受的参数内容如果是简单类型{}中只能使用value -->
-	<select id = "findUserByName" parameterType = "java.lang.String" resultType = "com.cauchy.mybatis.po.User">
+	<select id = "findUserByName" parameterType = "java.lang.String" resultType = "user">
 		select * from user where username like '%${value}$%'
 	</select>
 	<!-- 添加用户 -->
