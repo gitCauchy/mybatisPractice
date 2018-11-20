@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 使用mapper代理方法，namespace有特殊作用，namespace为mapper接口地址 -->
+<mapper namespace = "com.cauchy.mybatis.mapper.UserMapper">
+	<!-- 在映射文件中配置SQL语句 ，通过select执行数据库查询，id：标识映射文件中的SQL称为statement的id-->
+	<!-- parameterType指定输入参数的类型 ，#{}表示占位符，#{id} 表示接受输入的参数如果参数为简单类型，#{}中的参数名称可以任意
+	resultType为输出参数的类型-->
+	<select id = "findUserById" parameterType = "int" resultType = "com.cauchy.mybatis.po.User">
+		select * from user where id = #{id}
+	</select>
+	<!-- 根据名称模糊查询可能返回多个结果${}表示拼接字符串，可能会导致SQL注入，${}中接受的参数内容如果是简单类型{}中只能使用value -->
+	<select id = "findUserByName" parameterType = "java.lang.String" resultType = "com.cauchy.mybatis.po.User">
+		select * from user where username like '%${value}$%'
+	</select>
+	<!-- 添加用户 -->
+	<!-- parameterType指定参数类型为pojo，包括用户信息，#{}中指定pojo的属性名，接受属性值 ,mybatis通过ongl获取对象属性值-->
+	<insert id = "insertUser" parameterType = "com.cauchy.mybatis.po.User">
+		<!-- 将insert语句执行后的主键值返回，只适用于自增主键
+		keyproperty:将查询到的主键值设置到parameterType指定的id属性，order指定insert之前还是之后拿到值 -->
+		<selectKey keyProperty = "id" order = "AFTER" resultType = "java.lang.Integer">
+			select last_insert_id()
+		</selectKey>
+		insert into user (username,birthday,sex,address)value(#{username},#{birthday},#{sex},#{address})
+	</insert>
+	<!-- 删除用户 -->
+	<delete id = "deleteUser" parameterType = "java.lang.Integer">
+		delete from user where id = #{id}
+	</delete>
+	<!-- 更新用户 -->
+	<update id="updateUser" parameterType = "com.cauchy.mybatis.po.User">
+		update user set username = #{username},birthday = #{birthday},
+		sex = #{sex},address = #{address} where id = #{id}
+	</update>
+</mapper>
