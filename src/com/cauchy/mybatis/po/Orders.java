@@ -1,6 +1,7 @@
 package com.cauchy.mybatis.po;
 
 import java.util.Date;
+import java.util.List;
 
 public class Orders {
 	private Integer id;
@@ -10,6 +11,13 @@ public class Orders {
 	private String note;
 	// 用户信息：
 	private User user;
+	private List<OrderDetail> orderDetail;
+	public List<OrderDetail> getOrderDetail() {
+		return orderDetail;
+	}
+	public void setOrderDetail(List<OrderDetail> orderDetail) {
+		this.orderDetail = orderDetail;
+	}
 	public Integer getId() {
 		return id;
 	}
