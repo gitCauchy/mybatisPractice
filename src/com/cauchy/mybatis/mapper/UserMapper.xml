@@ -4,6 +4,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 使用mapper代理方法，namespace有特殊作用，namespace为mapper接口地址 -->
 <mapper namespace = "com.cauchy.mybatis.mapper.UserMapper">
+	<resultMap type="com.cauchy.mybatis.po.User" id="userResultMap">
+		<!-- 标识查询结果的唯一标识 -->
+		<id column="id_" property="id"/>
+		<!-- 标识普通列 -->
+		<result column="username_" property="username"/>
+	</resultMap>
 	<!-- 在映射文件中配置SQL语句 ，通过select执行数据库查询，id：标识映射文件中的SQL称为statement的id-->
 	<!-- parameterType指定输入参数的类型 ，#{}表示占位符，#{id} 表示接受输入的参数如果参数为简单类型，#{}中的参数名称可以任意
 	resultType为输出参数的类型-->
@@ -33,4 +39,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update user set username = #{username},birthday = #{birthday},
 		sex = #{sex},address = #{address} where id = #{id}
 	</update>
+	<!-- 用户信息的综合查询 -->
+	<!-- #{userCustom.sex} 取出包装用户的性别 -->
+	<!-- #{userCustom.username} 取出包装用户的名称-->
+	<sql id = "query_user_where">
+		<if test = "userCustomer != null">
+			<if test="userCustomer.sex != null and userCustomer.sex != ''">
+				user.sex = #{userCustomer.sex}
+			</if>
+			<if test = "userCustomer.username != null and userCustomer.username != ''">
+				user.username like '%${userCustomer.username}%'
+			</if>
+			<if test="ids!= null">
+				<foreach collection="ids" item = "user_id" open = "and(" close = ")" separator="or">
+					id = #{user_id}
+				</foreach>
+			</if>
+		</if>
+	</sql>
+	<select id = "findUserList" parameterType = "com.cauchy.mybatis.po.UserQueryVo" 
+		resultType = "com.cauchy.mybatis.po.UserCustomer">
+		select * from user
+		<where>
+			<!-- 引入SQL片段 -->
+			<include refid="query_user_where"></include>
+		</where>	
+	</select>
+	<select id="findUserCount" parameterType = "com.cauchy.mybatis.po.UserQueryVo" resultType = "int">
+		select count(*) from user where user.sex = #{userCustomer.sex} and user.username like '%${userCustomer.username}%'
+	</select>
+	<!-- 使用resultMap作为statement输出映射类型 -->
+	<select id = "findUserByResultMap" parameterType = "int" resultMap = "userResultMap">
+		select id id_,username username_ from user where id = #{value}
+	</select>
 </mapper>
