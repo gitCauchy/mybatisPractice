@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.cauchy.mybatis.mapper.OrderCustomMapper">
+	<!-- 查询订单关联用户信息 --> 
+	<select id = "findOrderUser" resultType = "com.cauchy.mybatis.po.OrderCustom">
+		select orders.* ,user.username,user.sex,user.address from orders,user where 
+			orders.user_id = user.id
+	</select>
+	<resultMap type="com.cauchy.mybatis.po.OrderCustom" id="orderUserResultMap">
+		<!-- 映射订单信息 -->
+		<!-- id : 指定查询列中订单信息中的唯一标识，如果有多个列组成唯一标识，则需要多个id -->
+		<id column="id" property="id"/>
+		<result column="user_id" property="userId"/>
+		<result column="number" property="number"/>
+		<result column="createtime" property="createTime"/>
+		<result column="note" property="note"/>
+		<!-- 映射用户信息 -->
+		<!-- association 用于映射关联单个对象的信息，property要将关联信息映射到order的哪一个属性 -->
+		<association property="user" javaType = "com.cauchy.mybatis.po.User">
+			<!-- 关联用户的唯一标识 ，用户标识用户信息的列-->
+			<id column="user_id" property="id"/>
+			<result column="username" property="username"/>
+			<result column="sex" property="sex"/>
+			<result column="address" property="address"/>
+		</association>
+	</resultMap>
+	<select id="findOrderUserResultMap" resultMap="orderUserResultMap">
+		select orders.* , user.username,user.sex,user.address from orders, user where orders.user_id = user.id
+	</select>
+</mapper>
