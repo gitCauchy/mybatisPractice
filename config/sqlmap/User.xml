@@ -4,6 +4,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 命名空间，作用为对SQL简单分类化管理，理解SQL隔离 -->
 <mapper namespace = "test">
+	<!-- 开启本mapper的二级缓存 -->
+	<cache/>
 	<!-- 在映射文件中配置SQL语句，通过select语句执行数据库查询，id：标识映射文件中的SQL称为statement的id
 	prarmeterType 指定输入参数的类型 
 	#{}表示占位符，#{id}表示接受输入的参数如果输入参数为简单类型，#{}中的参数名可以任意

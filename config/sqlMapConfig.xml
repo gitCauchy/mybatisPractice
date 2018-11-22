@@ -5,6 +5,14 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <configuration>
 	<!-- 加载数据库的配置信息 -->
 	<properties resource="db.properties"></properties>
+	<settings>
+		<!-- 延迟加载的开关 -->
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<!-- 将积极加载更改为消极加载 -->
+		<setting name="aggressiveLazyLoading" value="false"/>
+		<!-- 开启二级缓存 -->
+		<setting name="cacheEnabled" value="true"/>
+	</settings>
 	<typeAliases>
 		<!-- 针对个别类设置别名 -->
 		<typeAlias type="com.cauchy.mybatis.po.User" alias="user"/>
