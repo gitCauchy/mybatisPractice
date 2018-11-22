@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.cauchy.mybatis.po.Orders" id="orderAndOrderDetailResultMap" extends="orderUserResultMap">
 		<!-- 映射订单信息，使用继承标签可以控制冗余 -->
 		<!-- 订单明细信息，每个订单有多个明细信息，要使用collection来处理ofType:指定要映射到集合pojo的属性名 -->
-		<collection property="orderdetails" ofType = "com.cauchy.mybatis.po.OrderDetail">
+		<collection property="orderDetail" ofType = "com.cauchy.mybatis.po.OrderDetail">
 			<!-- 关联明细的唯一标识，property：要将对象的唯一标识对应的OrderDetail对象的属性 -->
 			<id column="orderdetail_id" property = "id"/>
 			<result column="items_id" property="itemsId"/>
@@ -40,9 +40,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<result column="orders_id" property = "ordersId"/>
 		</collection>
 	</resultMap>
-	<select id="findOrdersAndOrderDetailResultMap" resultMap = "orderAndOrderDetailResultMap">
+	<select id="findOrderAndOrderDetailResultMap" resultMap = "orderAndOrderDetailResultMap">
 		select orders.*,user.username,user.sex,user.address,orderdetail.id orderdetail_id,orderdetail.items_id,
 		orderdetail.item_num,orderdetail.orders_id from orders,user,orderdetail where orders.user_id = user.id and 
 		orderdetail.orders_id = orders.id
+	</select>
+	<resultMap type="com.cauchy.mybatis.po.User" id="userAndItemsResultMap">
+		<!-- 用户信息 -->
+		<id column = "user_id" property = "id"/>
+		<result column ="username" property="username"/>
+		<result column ="sex" property = "sex"/>
+		<result column ="address" property = "address"/>
+		<!-- 订单信息，每个用户对应多个订单 -->
+		<collection property="orderList" ofType = "com.cauchy.mybatis.po.Orders">
+			<id column="id" property="id"/>
+			<result column="number" property="number"/>
+			<result column="createtime" property="createTime"/>
+			<result column = "note" property = "note"/>
+			<!-- 订单明细 --> 
+			<collection property="orderDetail" ofType = "com.cauchy.mybatis.po.OrderDetail">
+				<id column="orderdetail_id"	property="id"/>
+				<result column="items_id" property = "itemsId"/>
+				<result column="items_num" property="itemsNum"/>
+				<result column="orders_id" property="ordersId"/>
+				<!-- 每个商品对应一个 明细 -->
+				<association property="items" javaType = "com.cauchy.mybatis.po.Items">
+					<id column = "items_id" property = "id"/>
+					<result column="items_name" property="name"/>
+					<result column="items_detail" property="detail"/>
+					<result column="items_price" property = "price"/>
+				</association>
+			</collection>
+		</collection>
+	</resultMap>
+	<!-- 查询用户以及购买的商品信息 -->
+	<select id="findUserAndItemsResultMap" resultMap = "userAndItemsResultMap">
+		select orders.*,user.username,user.sex,user.address,orderdetail.id orderdetail_id,orderdetail.items_id,
+		orderdetail.item_num,orderdetail.orders_id,items.name items_name,items.detail items_detail ,items.price 
+		items_price from orders,user,orderdetail,items WHERE orders.user_id = user.id and orderdetail.orders_id 
+		= orders.id and orderdetail.items_id = items.id
 	</select>
 </mapper>
