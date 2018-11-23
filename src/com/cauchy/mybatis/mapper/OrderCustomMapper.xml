@@ -80,4 +80,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		item_price from orders,user,orderdetail,item where orders.user_id = user.id and orderdetail.order_id 
 		= orders.id and orderdetail.item_id = item.id
 	</select>
-</mapper>
+	<!-- 延迟加载的resultMap -->
+	<resultMap type="com.cauchy.mybatis.po.Order" id="orderUserLazyLoading">
+	    <!-- 要实现对用户信息进行延迟加载 -->
+	    <!-- 对订单信息进行配置 -->
+	    <id column="id" property = "id"/>
+	    <result column="user_id" property="userId"/>
+	    <result column="number" property="number"/>
+	    <result column="createtime" property="createTime"/>
+	    <result column="note" property="note"/>
+	    <!-- 实现用户信息的延迟加载 select指定需要延迟
+	       	 加载的statement（根据user_id 去查询用户信息的statement column 是订单信息中关联用户信息的列) -->
+	    <association property="user" javaType="com.cauchy.mybatis.po.User" 
+	        select="com.cauchy.mybatis.mapper.UserMapper.findUserById" column="user_id">
+	    </association>
+	</resultMap>
+	<!-- 查询订单关联查询用户 ，用户信息需要延迟加载-->
+	<select id="findOrderUserLazyLoading" resultMap = "orderUserLazyLoading">
+	    select * from orders
+	</select>
+	</mapper>
