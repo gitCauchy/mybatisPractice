@@ -3,21 +3,10 @@
 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-	<!-- 加载数据库的配置信息 -->
-	<properties resource="db.properties"></properties>
-	<settings>
-		<!-- 延迟加载的开关 -->
-		<setting name="lazyLoadingEnabled" value="true"/>
-		<!-- 将积极加载更改为消极加载 -->
-		<setting name="aggressiveLazyLoading" value="false"/>
-		<!-- 开启二级缓存 -->
-		<setting name="cacheEnabled" value="true"/>
-	</settings>
+	<properties resource="db.properties"/>
 	<typeAliases>
-		<!-- 针对个别类设置别名 -->
-		<typeAlias type="com.cauchy.mybatis.po.User" alias="user"/>
-		<!-- 批量定义别名，别名就是类名，首字母大小写均可 -->
-		<!--<package name="com.cauchy.mybatis.po"/>-->
+	<!-- 针对单个别名 -->
+	<typeAlias type="com.cauchy.mybatis.po.User" alias="user"/>
 	</typeAliases>
 	<environments default="development">
 		<environment id="development">
@@ -33,14 +22,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		</environment>
 	</environments>
 	<mappers>
-		<mapper resource = "sqlmap/User.xml"/>
-		<mapper resource = "com/cauchy/mybatis/mapper/UserMapper.xml"/>
-		<mapper resource = "com/cauchy/mybatis/mapper/OrderCustomMapper.xml"/>
-		<!-- 通过mapper接口来加载映射文件，遵循一些规范，需要将mapper接口的类名和mapper.xml映射文件名称保持一致，并且在放置在一个目录，以上的规范的
-		前提是使用mapper代理 -->
-<!-- 		<mapper class = "com.cauchy.mybatis.mapper.UserMapper"/> -->
-	<!-- 批量加载mapper -->
-	<!-- 指定mapper接口的包名，批量加载的规范，需要将mapper接口的类名和mapper.xml文件名称保持一致，并在同一个目录上，以上规范的前提是mapper代理方式 -->
-<!-- 	<package name="com.cauchy.mybatis.mapper"/> -->
+		<mapper resource="sqlmap/User.xml"/>
+		<mapper resource="com/cauchy/mybatis/mapper/UserMapper.xml"/>
 	</mappers>
 </configuration>

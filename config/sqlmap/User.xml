@@ -2,52 +2,30 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- 命名空间，作用为对SQL简单分类化管理，理解SQL隔离 -->
+<!-- 命名空间，作用为对SQL简单分类化管理，实现SQL隔离 -->
 <mapper namespace = "test">
-	<!-- 开启本mapper的二级缓存 -->
-	<cache/>
 	<!-- 在映射文件中配置SQL语句，通过select语句执行数据库查询，id：标识映射文件中的SQL称为statement的id
-	prarmeterType 指定输入参数的类型 
-	#{}表示占位符，#{id}表示接受输入的参数如果输入参数为简单类型，#{}中的参数名可以任意
-	resultType为输出类型
+		prarmeterType 指定输入参数的类型 ，#{}表示占位符，#{id}表示接受输入的参数，如果输入参数为简单类型，
+		#{}中的参数名可以任意。resultType为输出类型。
 	-->
-	<select id="findUserById" parameterType = "int" resultType="com.cauchy.mybatis.po.User">
+	<select id = "findUserById" parameterType = "int" resultType="com.cauchy.mybatis.po.User">
 		select * from user where id = #{id}
 	</select>
-	<!-- 根据用户名称模糊查询可能查询多个结果，${}表示字符串拼接，将接收的内容不加任何修饰直接拼接到SQL中注入，使用
-		$可能会导致SQL注入，${}中接收的参数美容如果传入的是简单类型{}中只能使用value
-	 -->
-	<select id = "findUserByName" parameterType = "java.lang.String" resultType = "com.cauchy.mybatis.po.User">
+	<!-- 根据名称模糊查询可能返回多个结果,${}表示拼接字符串，表示将接受的内容不加任何修饰拼接到SQL中，
+		使用${}可能会导致SQL注入，${}中接收的参数内容如果传入的是简单类型,那么{}中只能使用value -->
+	<select id = "findUserByName" parameterType="java.lang.String" resultType = "com.cauchy.mybatis.po.User">
 		select * from user where username like '%${value}%'
 	</select>
-	<!-- 添加用户，parameterType指定的类型为pojo包含用户信息，#{}中指定属性名，接收属性值，mybatis通过ognl来获取对象的属性值 -->
-	<insert id = "insertUser" parameterType = "com.cauchy.mybatis.po.User">
-		insert into user (id,username,birthday,sex,address) value(#{id},#{username},#{birthday},#{sex},#{address})
+	<!-- 添加用户 -->
+	<!-- parameterType 指定的参数类型为pojo，包括用户信息，#{}中指定pojo的属性名，接受属性值 ，mybatis通过ognl来获取对象的属性值-->
+	<insert id="insertUser" parameterType = "com.cauchy.mybatis.po.User">
+		insert into user (id,username,birthday,sex,address)value(#{id},#{userName},#{birthday},#{sex},#{address})
 	</insert>
-	<!-- 自增主键 -->
-	<insert id="insertUser_2">
- 		<!--将insert语句执行后的主键值返回，只适用于自增主键 keyProperty :将查询到的主键值设置到parameterType指定的id属性，order
-		指定insert之前还是之后
-		-->
-		<selectKey keyProperty = "id" order = "AFTER" resultType = "java.lang.Integer">
-			select last_insert_id()
-		</selectKey>
-		insert into user(id,username,birthday,sex,address) value(#{id},#{username},#{birthday},#{sex},#{address})
-	</insert>
-	<!-- 非自增主键返回，适用UUID来生成主键，需要修改表中的id字段类型为String，长度设置为35位，执行的思路是通过UUID查询到主键
-	将主键输入到SQL语句中，执行UUID的执行书序为insert之前执行
-	-->
-	<insert id = "insertUser_3" parameterType = "com.cauchy.mybatis.po.User">
-		<selectKey keyProperty="id" order = "BEFORE" resultType = "java.lang.Integer">
-			select uuid()
-		</selectKey>
- 		insert into user(id,username,birthday,sex,address)value(#{id},#{username},#{birthday},#{sex},#{address}) -->
- 	</insert>
-	<delete id = "deleteUser" parameterType = "java.lang.Integer">
+	<delete id="deleteUser" parameterType = "java.lang.Integer">
 		delete from user where id = #{id}
 	</delete>
-	<!-- parameter指定parameterType 指定包含id以及要更新的内容id必须存在 -->
 	<update id="updateUser" parameterType = "com.cauchy.mybatis.po.User">
-		update user set username = #{username},birthday = #{birthday},sex = #{sex},address = #{address} where id = #{id}
+		update user set username = #{userName},birthday = #{birthday},
+		sex = #{sex},address = #{address} where id = #{id}
 	</update>
 </mapper>

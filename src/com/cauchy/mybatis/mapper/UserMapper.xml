@@ -2,74 +2,83 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- 使用mapper代理方法，namespace有特殊作用，namespace为mapper接口地址 -->
-<mapper namespace = "com.cauchy.mybatis.mapper.UserMapper">
-	<resultMap type="com.cauchy.mybatis.po.User" id="userResultMap">
-		<!-- 标识查询结果的唯一标识 -->
-		<id column="id_" property="id"/>
-		<!-- 标识普通列 -->
-		<result column="username_" property="username"/>
-	</resultMap>
-	<!-- 在映射文件中配置SQL语句 ，通过select执行数据库查询，id：标识映射文件中的SQL称为statement的id-->
-	<!-- parameterType指定输入参数的类型 ，#{}表示占位符，#{id} 表示接受输入的参数如果参数为简单类型，#{}中的参数名称可以任意
-	resultType为输出参数的类型-->
+<!--使用mapper代理方法，namespace有特殊作用，namespace为mapper接口地址  -->
+<mapper namespace="com.cauchy.mybatis.mapper.UserMapper">
+	<!-- 在映射文件中配置SQL语句, 通过select执行数据库查询，id：标识映射文件中的SQL称为statement的id -->
+	<!-- prarmeterType 指定输入参数的类型 ,#{}表示占位符，#{id} 表示接受输入的参数如果输入的参数为简单类型，#{}中的参数名可以任意
+	resultType为输出类型-->
 	<select id = "findUserById" parameterType = "int" resultType = "user">
 		select * from user where id = #{id}
 	</select>
-	<!-- 根据名称模糊查询可能返回多个结果${}表示拼接字符串，可能会导致SQL注入，${}中接受的参数内容如果是简单类型{}中只能使用value -->
-	<select id = "findUserByName" parameterType = "java.lang.String" resultType = "user">
-		select * from user where username like '%${value}$%'
+	<!-- 根据名称模糊查询可能返回多个结果 -->
+	<!-- ${}表示拼接字符串，表示将接受的内容不加任何修饰拼接到SQL中，使用$可能会导致SQL注入，${}中接受的参数内容如果传入的是简单类型
+	{}中只能使用value -->
+	<select id = "findUserByName" parameterType="java.lang.String" resultType = "com.cauchy.mybatis.po.User">
+		select * from user where username like '%${value}%'
 	</select>
+	<!-- 定义一个SQL片段id 为唯一标识,根据经验，SQL片段基于单表定义，在我们的SQL片段中，不要包括where -->
+	<sql id="query_user_where">
+		<if test="userCustom != null">
+				<if test="userCustom.sex != null and userCustom.sex != ''">
+					user.sex = #{userCustom.sex} 
+				</if>
+				<if test="userCustom.userName != null and userCustom.userName != ''">
+					user.username like '%${userCustom.userName}%'
+				</if>
+				<if test="ids!=null">
+		    		<!-- 使用foreach来遍历传入的ids,collection是用来指定集合属性 item用来遍历生成对象中 ，open开始遍历时要拼接的串,
+		    			close使用下边的SQL进行拼接：and  (id = 1 or id = 10 or id = 16) separator为两个对象需要拼接的串-->
+		    		<foreach collection="ids" item="user_id" open="and(" close = ")" separator="or">
+						id = #{user_id}
+					</foreach>
+				</if>
+			</if>
+	</sql>
 	<!-- 添加用户 -->
-	<!-- parameterType指定参数类型为pojo，包括用户信息，#{}中指定pojo的属性名，接受属性值 ,mybatis通过ongl获取对象属性值-->
-	<insert id = "insertUser" parameterType = "com.cauchy.mybatis.po.User">
-		<!-- 将insert语句执行后的主键值返回，只适用于自增主键
-		keyproperty:将查询到的主键值设置到parameterType指定的id属性，order指定insert之前还是之后拿到值 -->
-		<selectKey keyProperty = "id" order = "AFTER" resultType = "java.lang.Integer">
+	<!-- parameterType 指定的参数类型为pojo，包括用户信息，#{}中指定pojo的属性名，接受属性值 ，
+	mybatis通过ognl来获取对象的属性值-->
+	<insert id="insertUser" parameterType = "com.cauchy.mybatis.po.User">
+		<!-- 将insert 语句执行后的主键值返回 ,只适用于自增主键
+		keyProperty：将查询到的主键值设置到parameterType 指定的对象的id属性，order指定insert之前还是之后拿到值-->
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
 			select last_insert_id()
 		</selectKey>
-		insert into user (username,birthday,sex,address)value(#{username},#{birthday},#{sex},#{address})
+		insert into user (username,birthday,sex,address)value(#{userName},#{birthday},#{sex},#{address})
 	</insert>
-	<!-- 删除用户 -->
-	<delete id = "deleteUser" parameterType = "java.lang.Integer">
+	<delete id="deleteUser" parameterType = "java.lang.Integer">
 		delete from user where id = #{id}
 	</delete>
-	<!-- 更新用户 -->
+	<!-- parameter 指定parameterType 指定user对象包含id以及要更新的内容，id必须存在-->
 	<update id="updateUser" parameterType = "com.cauchy.mybatis.po.User">
-		update user set username = #{username},birthday = #{birthday},
+		update user set username = #{userName},birthday = #{birthday},
 		sex = #{sex},address = #{address} where id = #{id}
 	</update>
-	<!-- 用户信息的综合查询 -->
-	<!-- #{userCustom.sex} 取出包装用户的性别 -->
-	<!-- #{userCustom.username} 取出包装用户的名称-->
-	<sql id = "query_user_where">
-		<if test = "userCustomer != null">
-			<if test="userCustomer.sex != null and userCustomer.sex != ''">
-				user.sex = #{userCustomer.sex}
-			</if>
-			<if test = "userCustomer.username != null and userCustomer.username != ''">
-				user.username like '%${userCustomer.username}%'
-			</if>
-			<if test="ids!= null">
-				<foreach collection="ids" item = "user_id" open = "and(" close = ")" separator="or">
-					id = #{user_id}
-				</foreach>
-			</if>
-		</if>
-	</sql>
-	<select id = "findUserList" parameterType = "com.cauchy.mybatis.po.UserQueryVo" 
-		resultType = "com.cauchy.mybatis.po.UserCustomer">
+	<!-- 用户信息综合查询 -->
+	<!-- #{userCustom.sex}:取出pojo包装用户的性别 -->
+	<!-- #{userCustom.userName}:取出pojo包装用户的名称 -->
+	<select id="findUserList" parameterType="com.cauchy.mybatis.po.UserQueryVo" 
+		resultType="com.cauchy.mybatis.po.UserCustom">
 		select * from user
 		<where>
-			<!-- 引入SQL片段 -->
+			<!-- 引用SQL片段 -->
 			<include refid="query_user_where"></include>
-		</where>	
+		</where>
 	</select>
+	<!-- 用户信息的综合查询总数： -->
 	<select id="findUserCount" parameterType = "com.cauchy.mybatis.po.UserQueryVo" resultType = "int">
-		select count(*) from user where user.sex = #{userCustomer.sex} and user.username like '%${userCustomer.username}%'
+		select count(*) from user where user.sex = #{userCustom.sex} 
+		and user.username like '%${userCustom.userName}%'
 	</select>
-	<!-- 使用resultMap作为statement输出映射类型 -->
-	<select id = "findUserByResultMap" parameterType = "int" resultMap = "userResultMap">
+	<resultMap type="com.cauchy.mybatis.po.User" id="userResultMap">
+		<!-- 标识查询结果集的唯一标识 -->
+		<id column="id_" property="id"/>
+		<!-- result：普通列的标识 -->
+		<result column="username_" property="userName"/>
+	</resultMap>
+	<!-- 使用resultMap进行输出的映射 -->
+	<select id="findUserByResultMap" parameterType="int" 
+		resultMap = "userResultMap">
 		select id id_,username username_ from user where id = #{value}
 	</select>
+	
 </mapper>

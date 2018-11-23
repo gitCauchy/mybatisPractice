@@ -1,33 +1,24 @@
 package com.cauchy.mybatis.po;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-public class User implements Serializable{
+public class User {
 	private int id;
-	private String username;
+	private String userName;
 	private String sex;
 	private Date birthday;
 	private String address;
-	private List<Orders> orderList;
 	public int getId() {
 		return id;
-	}
-	public List<Orders> getOrderList() {
-		return orderList;
-	}
-	public void setOrderList(List<Orders> orderList) {
-		this.orderList = orderList;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getSex() {
 		return sex;
@@ -49,7 +40,7 @@ public class User implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", sex=" + sex + ", birthday=" + birthday + ", address="
+		return "User [id=" + id + ", userName=" + userName + ", sex=" + sex + ", birthday=" + birthday + ", address="
 				+ address + "]";
 	}
 	

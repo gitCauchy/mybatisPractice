@@ -11,22 +11,26 @@ public class UserDaoImpl implements UserDao{
 	public UserDaoImpl(SqlSessionFactory sqlSessionFactory) {
 		this.sqlSessionFactory = sqlSessionFactory;
 	}
-	public User findUserById(int id) throws Exception{
+	@Override
+	public User findUserById(int id) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		User user = sqlSession.selectOne("test.findUserById",id);
 		sqlSession.close();
 		return user;
 	}
-	public void insertUser(User user) throws Exception{
+	@Override
+	public void insertUser(User user) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		sqlSession.insert("test.insertUser",user);
 		sqlSession.commit();
 		sqlSession.close();
 	}
-	public void deleteUser(int id) throws Exception{
+	@Override
+	public void deleteUser(int id) throws Exception {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		sqlSession.delete("test.deleteUser",id);
 		sqlSession.commit();
 		sqlSession.close();
 	}
+	
 }
