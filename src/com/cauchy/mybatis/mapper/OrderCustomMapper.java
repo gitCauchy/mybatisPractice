@@ -10,4 +10,6 @@ public interface OrderCustomMapper {
 	public List<OrderCustom> findOrderUser()throws Exception;
 	// ResultMap实现上一方法：
 	public List<Order> findOrderUserResultMap()throws Exception;
+	// 订单信息：
+	public List<Order> findOrderAndOrderDetailResultMap() throws Exception;
 }

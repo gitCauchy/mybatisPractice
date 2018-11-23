@@ -1,6 +1,7 @@
 package com.cauchy.mybatis.po;
 
 import java.util.Date;
+import java.util.List;
 
 public class Order {
 	private Integer id;
@@ -9,6 +10,7 @@ public class Order {
 	private Date createTime;
 	private String note;
 	private User user;
+	private List<OrderDetail> orderDetailList;
 	public Integer getId() {
 		return id;
 	}
@@ -45,10 +47,18 @@ public class Order {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	public List<OrderDetail> getOrderDetailList() {
+		return orderDetailList;
+	}
+	public void setOrderDetailList(List<OrderDetail> orderDetailList) {
+		this.orderDetailList = orderDetailList;
+	}
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", userId=" + userId + ", number=" + number + ", createTime=" + createTime
-				+ ", note=" + note + ", user=" + user + "]";
+				+ ", note=" + note + ", user=" + user + ", orderDetailList=" + orderDetailList + "]";
 	}
+	
 	
 }

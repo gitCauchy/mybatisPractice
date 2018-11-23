@@ -42,4 +42,14 @@ public class OrderCustomMapperTest {
 		System.out.println(list);
 		sqlSession.close();
 	}
+	@Test
+	public void testFindOrderandOrderDetailResultMap()throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		// 创建代理对象：
+		OrderCustomMapper orderCustomMapper = sqlSession.getMapper(OrderCustomMapper.class);
+		// 调用方法
+		List<Order> list = orderCustomMapper.findOrderAndOrderDetailResultMap();
+		System.out.println(list);
+		sqlSession.close();
+	}
 }
