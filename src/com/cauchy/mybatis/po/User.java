@@ -1,6 +1,7 @@
 package com.cauchy.mybatis.po;
 
 import java.util.Date;
+import java.util.List;
 
 public class User {
 	private int id;
@@ -8,6 +9,8 @@ public class User {
 	private String sex;
 	private Date birthday;
 	private String address;
+	private List<Order> orderList;
+	
 	public int getId() {
 		return id;
 	}
@@ -37,6 +40,13 @@ public class User {
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	
+	public List<Order> getOrderList() {
+		return orderList;
+	}
+	public void setOrderList(List<Order> orderList) {
+		this.orderList = orderList;
 	}
 	@Override
 	public String toString() {

@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import com.cauchy.mybatis.po.Order;
 import com.cauchy.mybatis.po.OrderCustom;
+import com.cauchy.mybatis.po.User;
 
 public class OrderCustomMapperTest {
 	private SqlSessionFactory sqlSessionFactory;
@@ -49,6 +50,16 @@ public class OrderCustomMapperTest {
 		OrderCustomMapper orderCustomMapper = sqlSession.getMapper(OrderCustomMapper.class);
 		// 调用方法
 		List<Order> list = orderCustomMapper.findOrderAndOrderDetailResultMap();
+		System.out.println(list);
+		sqlSession.close();
+	}
+	@Test
+	public void testFindUserAndItemsResultMap()throws Exception{
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		// 创建代理对象：
+		OrderCustomMapper orderCustomMapper = sqlSession.getMapper(OrderCustomMapper.class);
+		// 调用方法
+		List<User>list = orderCustomMapper.findUserAndItemsResultMap();
 		System.out.println(list);
 		sqlSession.close();
 	}
